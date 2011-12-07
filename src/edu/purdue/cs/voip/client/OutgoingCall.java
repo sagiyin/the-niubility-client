@@ -32,7 +32,7 @@ public class OutgoingCall extends Activity {
 
     endCall.setOnClickListener(new View.OnClickListener() {
       public void onClick(View v) {
-        startActivity(new Intent(self, VOIP_ClientActivity.class));
+        startActivity(new Intent(self, OnlineList.class));
       }
     });
 
