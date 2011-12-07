@@ -1,60 +1,69 @@
 package edu.purdue.cs.voip.client;
 
-import android.app.ListActivity;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.Scanner;
+
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.Button;
+import android.widget.EditText;
 
-public class VOIP_ClientActivity extends ListActivity {
+public class VOIP_ClientActivity extends Activity {
   /** Called when the activity is first created. */
-  // get current online user here
-  private String[] onlineUsers = { "lzhen", "SG", "BB" };
-  private static String currentIP = null;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    setContentView(R.layout.main);
     final VOIP_ClientActivity self = this;
-    setListAdapter(new ArrayAdapter<String>(this, R.layout.main, onlineUsers));
 
-    ListView lv = getListView();
-    lv.setTextFilterEnabled(true);
+    final String FILENAME = "login_info";
+    String nickname;
+    String serverIP;
 
-    lv.setOnItemClickListener(new OnItemClickListener() {
-      public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        startActivity(new Intent(self, OutgoingCall.class));
-        
-        currentIP = (String) ((TextView) view).getText();
+    if (this.getFileStreamPath(FILENAME).exists()) {
+      // exist, read from file
 
-        // When clicked, show a toast with the TextView text
-        // Toast.makeText(getApplicationContext(), ((TextView) view).getText(),
-        // Toast.LENGTH_SHORT).show();
+      try {
+        // FileInputStream fis = openFileInput(FILENAME);
+        Scanner s = new Scanner(new File(FILENAME));
+        nickname = s.next();
+        serverIP = s.next();
+
+        ((EditText) findViewById(R.id.nickname)).setText(nickname);
+        ((EditText) findViewById(R.id.serverIP)).setText(serverIP);
+
+      } catch (Exception e) {
       }
-    });
-  }
-  
-  public static String getCurrentIP(){
-    return currentIP;
-  }
+    }
+    // not exist
+    // both field must be filled
+    ((Button) findViewById(R.id.next)).setOnClickListener(new View.OnClickListener() {
+      public void onClick(View v) {
+        //output to the file
+        try {
+          FileOutputStream fos = openFileOutput(FILENAME, Context.MODE_PRIVATE);
+          fos.write(((EditText) findViewById(R.id.nickname)).getText().toString().getBytes());
+          fos.write("\n".getBytes());
+          fos.write(((EditText) findViewById(R.id.serverIP)).getText().toString().getBytes());
+          fos.close();
+        } catch (Exception e) {
+        }
+        
+        //connect to the server, jump to onlinelist page
+        
+        startActivity(new Intent(self, OnlineList.class));
+      }
 
-  // @Override
-  // public void onCreate(Bundle savedInstanceState) {
-  // super.onCreate(savedInstanceState);
-  // final VOIP_ClientActivity self = this;
-  // Button goTo = new Button(this);
-  //
-  // goTo.setText("goTo");
-  // goTo.setOnClickListener(new View.OnClickListener() {
-  // public void onClick(View v) {
-  // startActivity(new Intent(self, TestPage.class));
-  // }
-  // });
-  // setContentView(R.layout.main);
-  // }
+    });
+    // String FILENAME = "hello_file";
+    // String string = "hello world!";
+    //
+
+  }
 
 }
