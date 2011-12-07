@@ -24,7 +24,7 @@ public class OutgoingCall extends Activity {
     setContentView(R.layout.outgoing);
 
     TextView textView = (TextView) findViewById(R.id.label);
-    textView.setText(VOIP_ClientActivity.getCurrentIP());
+    textView.setText(OnlineList.getCurrentIP());
     
     ImageView userImage = (ImageView) findViewById(R.id.userimage);
     
