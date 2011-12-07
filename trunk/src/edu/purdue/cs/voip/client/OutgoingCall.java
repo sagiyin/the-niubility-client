@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
@@ -24,7 +25,9 @@ public class OutgoingCall extends Activity {
 
     TextView textView = (TextView) findViewById(R.id.label);
     textView.setText(VOIP_ClientActivity.getCurrentIP());
-
+    
+    ImageView userImage = (ImageView) findViewById(R.id.userimage);
+    
     Button endCall = (Button) findViewById(R.id.endCall);
 
     endCall.setOnClickListener(new View.OnClickListener() {
