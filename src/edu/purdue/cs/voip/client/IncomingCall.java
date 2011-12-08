@@ -12,10 +12,11 @@ import android.widget.TextView;
 
 /**
  * @author lzhen
- *
+ * 
  */
 public class IncomingCall extends Activity {
-  
+
+
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -24,25 +25,32 @@ public class IncomingCall extends Activity {
     setContentView(R.layout.incoming);
 
     TextView textView = (TextView) findViewById(R.id.label);
-    //will receive nickname
-//    textView.setText(VOIP_ClientActivity.getCurrentIP());
+    // will receive nickname
+    // textView.setText(VOIP_ClientActivity.getCurrentIP());
 
     Button accept = (Button) findViewById(R.id.accept);
     Button reject = (Button) findViewById(R.id.reject);
 
     accept.setOnClickListener(new View.OnClickListener() {
       public void onClick(View v) {
-        startActivity(new Intent(self, OnlineList.class));
+        acceptCall();
       }
     });
-    
+
     reject.setOnClickListener(new View.OnClickListener() {
       public void onClick(View v) {
-        startActivity(new Intent(self, OnlineList.class));
+        rejectCall();
       }
     });
 
   }
-  
+
+  public void acceptCall() {
+    startActivity(new Intent(this, OutgoingCall.class));
+  }
+
+  public void rejectCall() {
+    startActivity(new Intent(this, OnlineList.class));
+  }
 
 }
