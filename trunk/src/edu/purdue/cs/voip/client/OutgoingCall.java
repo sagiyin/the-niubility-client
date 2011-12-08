@@ -16,6 +16,7 @@ import android.widget.TextView;
  * 
  */
 public class OutgoingCall extends Activity {
+  
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -32,10 +33,14 @@ public class OutgoingCall extends Activity {
 
     endCall.setOnClickListener(new View.OnClickListener() {
       public void onClick(View v) {
-        startActivity(new Intent(self, OnlineList.class));
+       endCall();
       }
     });
 
+  }
+  
+  public void endCall(){
+    startActivity(new Intent(this, OnlineList.class));
   }
 
 }
