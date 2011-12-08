@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -40,23 +41,31 @@ public class VOIP_ClientActivity extends Activity {
       } catch (Exception e) {
       }
     }
-    // not exist
-    // both field must be filled
+
     ((Button) findViewById(R.id.next)).setOnClickListener(new View.OnClickListener() {
       public void onClick(View v) {
-        //output to the file
-        try {
-          FileOutputStream fos = openFileOutput(FILENAME, Context.MODE_PRIVATE);
-          fos.write(((EditText) findViewById(R.id.nickname)).getText().toString().getBytes());
-          fos.write("\n".getBytes());
-          fos.write(((EditText) findViewById(R.id.serverIP)).getText().toString().getBytes());
-          fos.close();
-        } catch (Exception e) {
+        // check whether both field is filled
+        //Log.v("VOIP_A","fuck");
+        //Log.v("VOIP_A",((EditText) findViewById(R.id.nickname)).getText().toString());
+        
+        if (((((EditText) findViewById(R.id.nickname)).getText()) == null)
+            || ((((EditText) findViewById(R.id.serverIP)).getText())) == null) {
+        } else {
+
+          // output to the file
+          try {
+            FileOutputStream fos = openFileOutput(FILENAME, Context.MODE_PRIVATE);
+            fos.write(((EditText) findViewById(R.id.nickname)).getText().toString().getBytes());
+            fos.write("\n".getBytes());
+            fos.write(((EditText) findViewById(R.id.serverIP)).getText().toString().getBytes());
+            fos.close();
+          } catch (Exception e) {
+          }
+
+          // connect to the server, jump to onlinelist page
+
+          startActivity(new Intent(self, OnlineList.class));
         }
-        
-        //connect to the server, jump to onlinelist page
-        
-        startActivity(new Intent(self, OnlineList.class));
       }
 
     });
