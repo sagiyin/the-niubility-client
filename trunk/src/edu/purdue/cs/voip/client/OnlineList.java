@@ -75,8 +75,6 @@ public class OnlineList extends Activity {
   
   public OnlineList returnSelf()
   {
-    return self;  //TODO
+    return self;
   }
- 
-
 }
