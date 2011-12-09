@@ -4,11 +4,23 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <Button
-        android:id="@+id/update"
-        android:layout_width="200px"
+    <LinearLayout
+        android:layout_width="fill_parent"
         android:layout_height="60px"
-        android:text="Update" />
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/update"
+            android:layout_width="200px"
+            android:layout_height="60px"
+            android:text="Update" />
+
+        <Button
+            android:id="@+id/exit"
+            android:layout_width="200px"
+            android:layout_height="60px"
+            android:text="Exit" />
+    </LinearLayout>
 
     <ListView
         android:id="@+id/list"
