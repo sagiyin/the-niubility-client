@@ -7,12 +7,13 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
+import android.app.Activity;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 
 public class AudioSender extends Thread {
-  VOIP_ClientActivity clientActivity;
+  Activity clientActivity;
   DatagramSocket socket;
   DatagramPacket packet;
   int buf_size = AudioRecord.getMinBufferSize(44100, AudioFormat.CHANNEL_IN_MONO,
@@ -22,7 +23,7 @@ public class AudioSender extends Thread {
   InetAddress targetIP;
   int targetPort;
   
-  public AudioSender(VOIP_ClientActivity clientActivity, String targetIP, int targetPort) {
+  public AudioSender(Activity clientActivity, String targetIP, int targetPort) {
     this.clientActivity = clientActivity;
     this.recording = false;
     try {

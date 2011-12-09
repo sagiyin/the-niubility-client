@@ -5,12 +5,13 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
+import android.app.Activity;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
 
 public class AudioReceiver extends Thread {
-  VOIP_ClientActivity clientActivity;
+  Activity clientActivity;
   DatagramSocket socket;
   DatagramPacket packet;
   int buf_size = AudioTrack.getMinBufferSize(44100, AudioFormat.CHANNEL_OUT_MONO,
@@ -21,7 +22,7 @@ public class AudioReceiver extends Thread {
   InetAddress targetIP;
   int listeningPort;
 
-  public AudioReceiver(VOIP_ClientActivity clientActivity, int listeningPort) {
+  public AudioReceiver(Activity clientActivity, int listeningPort) {
     this.clientActivity = clientActivity;
     this.listeningPort = listeningPort;
   }
