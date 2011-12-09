@@ -1,32 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:gravity="center_horizontal">
-    
-    <TextView
-        android:id="@+id/label"
-        android:layout_width="fill_parent"
-        android:layout_height="100px"
-        android:textSize="22px"
-        android:gravity="center_horizontal"/>
-        
-	<ImageView 
-   		android:id="@+id/userimage"
-   		android:src="@drawable/smiley"
-   		android:layout_width="wrap_content"
-   		android:layout_height="wrap_content"/>
-	
-	<TextView
-        android:id="@+id/label_empty"
-        android:layout_width="fill_parent"
-        android:layout_height="200px"/>
+    android:gravity="center_vertical"
+    android:orientation="horizontal" >
 
-    <Button
-        android:id="@+id/endCall"
-        android:layout_width="180px"
-        android:layout_height="60px"
-        android:text="End Call" />
+    <LinearLayout
+        android:layout_width="600px"
+        android:layout_height="fill_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical" >
+
+        <ImageView
+            android:id="@+id/userimage"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:src="@drawable/smiley" />
+
+        <TextView
+            android:id="@+id/label_empty"
+            android:layout_width="fill_parent"
+            android:layout_height="300px" />
+
+        <Button
+            android:id="@+id/endCall"
+            android:layout_width="180px"
+            android:layout_height="60px"
+            android:text="End Call" />
+        
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="600px"
+        android:layout_height="fill_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical" >
+
+        <EditText
+            android:id="@+id/chatBox"
+            android:layout_width="600px"
+            android:layout_height="540px"
+            android:background="@android:drawable/editbox_background"
+            android:singleLine="false"
+            android:textColor="#000000"
+            android:textSize="22px" />
+
+        <EditText
+            android:id="@+id/inputBox"
+            android:layout_width="600px"
+            android:layout_height="60px"
+            android:background="@android:drawable/editbox_background"
+            android:singleLine="true"
+            android:textColor="#000000"
+            android:textSize="22px" />
+
+        <Button
+            android:id="@+id/sendText"
+            android:layout_width="180px"
+            android:layout_height="60px"
+            android:text="Send" />
+        
+    </LinearLayout>
 
 </LinearLayout>
