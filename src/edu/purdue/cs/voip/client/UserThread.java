@@ -47,6 +47,8 @@ public class UserThread extends Thread {
 
   private InetAddress remoteIP;
   
+  private StringBuffer messages = new StringBuffer();
+  
   public static UserThread getInstance() {
     return instance;
   }
@@ -99,7 +101,6 @@ public class UserThread extends Thread {
     request.setRequestType(VOIPConstant.OP_REQUEST_CALL);
     request.setRequestTarget(remoteIP.getHostAddress());
     queueOutgoing.add(request);
-    Log.v("CALL", "Call Request Sent!");
   }
   
   public void sendAcceptCall(String remoteIP) {
@@ -107,9 +108,24 @@ public class UserThread extends Thread {
     request.setRequestType(VOIPConstant.OP_REQUEST_ACCEPT);
     request.setRequestTarget(remoteIP);
     queueOutgoing.add(request);
-    Log.v("CALL", "Accepted Call Request!");
   }
   
+  public void sendMessage(String remoteIP, String message) {
+    ClientRequest request= new ClientRequest();
+    request.setRequestType(VOIPConstant.OP_REQUEST_SENDMESSAGE);
+    request.setRequestTarget(remoteIP);
+    request.setRequestMessage(message);
+    messages.append(socket.getLocalAddress().getHostAddress() + ":" + message + "\r\n");
+    queueOutgoing.add(request); 
+  }
+  
+  public String getMessages() {
+    return messages.toString();
+  }
+  
+  public void clearMessages() {
+    messages = new StringBuffer();
+  }
   public void run() {
     Gson gson = new Gson();
     try {
@@ -161,11 +177,12 @@ public class UserThread extends Thread {
               context.startActivity(new Intent(context, OutgoingCall.class));
             }
           } else if (response.getResponseType().equals(VOIPConstant.OP_RESPONSE_DROP)) {
-            Log.v("DROP", "Got Drop Call Response!!!! Dropping!!!");
             AudioSender.getInstance().stopRecording();
             AudioReceiver.getInstance().stopPlay();
-            Log.v("DROP", "Sender/Receiver stopped!");
+            clearMessages();
             context.startActivity(new Intent(context, OnlineList.class));
+          } else if (response.getResponseType().equals(VOIPConstant.OP_REACH_SENDMESSAGE)) {
+            messages.append(response.getRequestTarget() + ": " + response.getReachMessage() + "\r\n");
           }
         }
       } catch (Exception e) {
