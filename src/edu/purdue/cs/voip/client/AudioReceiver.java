@@ -11,54 +11,65 @@ import android.media.AudioManager;
 import android.media.AudioTrack;
 
 public class AudioReceiver extends Thread {
+  private static final AudioReceiver instance = new AudioReceiver();
+  
   Activity clientActivity;
   DatagramSocket socket;
   DatagramPacket packet;
   int buf_size = AudioTrack.getMinBufferSize(44100, AudioFormat.CHANNEL_OUT_MONO,
-      AudioFormat.ENCODING_PCM_16BIT);
+      AudioFormat.ENCODING_PCM_16BIT)*4;
   AudioTrack track;
 
   boolean playing;
   InetAddress targetIP;
   int listeningPort;
 
-  public AudioReceiver(Activity clientActivity, int listeningPort) {
-    this.clientActivity = clientActivity;
-    this.listeningPort = listeningPort;
+  public static AudioReceiver getInstance() {
+    return instance;
+  }
+  
+  private AudioReceiver() {}
+  
+  public void init(Activity clientActivity, int listeningPort) {
+    instance.clientActivity = clientActivity;
+    instance.listeningPort = listeningPort;
   }
 
   public void startPlay() {
-    track = new AudioTrack(AudioManager.STREAM_MUSIC, 44100, AudioFormat.CHANNEL_OUT_MONO,
+    if (instance.getState().equals(Thread.State.NEW)) {
+      instance.start();
+    }
+    instance.track = new AudioTrack(AudioManager.STREAM_MUSIC, 44100, AudioFormat.CHANNEL_OUT_MONO,
         AudioFormat.ENCODING_PCM_16BIT, buf_size, AudioTrack.MODE_STREAM);
-    track.play();
-    this.playing = true;
+    instance.track.play();
+    instance.playing = true;
   }
 
   public void stopPlay() {
-    this.playing = false;
-    track.stop();
-    track.release();
+    instance.playing = false;
+    instance.track.stop();
+    instance.track.release();
   }
 
   public void run(){
-    playing = false;
+    instance.playing = false;
 
     try {
-      socket = new DatagramSocket(listeningPort);
+      instance.socket = new DatagramSocket(listeningPort);
     } catch (Exception e) {
       e.printStackTrace();
     }
     
     while (true) {
-      if (playing) {
+      if (instance.playing) {
         byte[] buffer = new byte[256];
         packet = new DatagramPacket(buffer, buffer.length);
           try {
-            socket.receive(packet);
+            instance.socket.receive(packet);
           } catch (IOException e) {
             e.printStackTrace();
           }
-        track.write(buffer, 0, buffer.length);
+          instance.track.write(buffer, 0, buffer.length);
       }
     }
   }

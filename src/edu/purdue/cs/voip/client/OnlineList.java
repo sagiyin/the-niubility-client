@@ -3,6 +3,11 @@
  */
 package edu.purdue.cs.voip.client;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,16 +26,18 @@ import android.widget.TextView;
 public class OnlineList extends Activity {
 
   // get current online user here
-  private String[] onlineUsers = { "lzhen", "SG", "BB" };
-  private static String currentIP = null;
+  private List<String> onlineUsers;
+  private ListView lv;
+  final private OnlineList self = this;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    final OnlineList self = this;
+    
+    onlineUsers = new ArrayList<String>();
 
     setContentView(R.layout.onlinelist);
-    ListView lv = (ListView) findViewById(R.id.list);
+    lv = (ListView) findViewById(R.id.list);
     final ArrayAdapter<String> refreshList = new ArrayAdapter<String>(this,
         android.R.layout.simple_list_item_1, onlineUsers);
 
@@ -41,23 +48,35 @@ public class OnlineList extends Activity {
 
     lv.setOnItemClickListener(new OnItemClickListener() {
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        startActivity(new Intent(self, OutgoingCall.class));
-
-        currentIP = (String) ((TextView) view).getText();
-
+        InetAddress remoteIP;
+        try {
+          remoteIP = InetAddress.getByName((((TextView) view).getText()).toString());
+          UserThread.getInstance().call(remoteIP);
+        } catch (UnknownHostException e) {
+          e.printStackTrace();
+        }
       }
     });
 
     ((Button) (findViewById(R.id.update))).setOnClickListener(new View.OnClickListener() {
       public void onClick(View v) {
-        onlineUsers[2] = "WORI";
+        UserThread.getInstance().sendRequestListAll();
+        onlineUsers.clear();
+        onlineUsers.addAll(UserThread.getInstance().getListClients());
         refreshList.notifyDataSetChanged();
       }
     });
   }
-
-  public static String getCurrentIP() {
-    return currentIP;
+  
+  public void switchToOutgoingCall()
+  {
+    startActivity(new Intent(this, OutgoingCall.class));
   }
+  
+  public OnlineList returnSelf()
+  {
+    return self;  //TODO
+  }
+ 
 
 }
