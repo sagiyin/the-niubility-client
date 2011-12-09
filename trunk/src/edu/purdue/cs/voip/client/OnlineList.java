@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * @author lzhen
@@ -64,6 +65,19 @@ public class OnlineList extends Activity {
         onlineUsers.clear();
         onlineUsers.addAll(UserThread.getInstance().getListClients());
         refreshList.notifyDataSetChanged();
+      }
+    });
+    
+    ((Button) (findViewById(R.id.exit))).setOnClickListener(new View.OnClickListener() {
+      public void onClick(View v) {
+        UserThread.getInstance().sendExitRequest();
+        
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        
+        System.exit(0);
       }
     });
   }

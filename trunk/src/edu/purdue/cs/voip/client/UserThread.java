@@ -103,13 +103,19 @@ public class UserThread extends Thread {
     queueOutgoing.add(request);
   }
   
-  public void sendAcceptCall(String remoteIP) {
+  public void sendAcceptCall() {
     ClientRequest request= new ClientRequest();
     request.setRequestType(VOIPConstant.OP_REQUEST_ACCEPT);
-    request.setRequestTarget(remoteIP);
+    request.setRequestTarget(remoteIP.getHostAddress());
     queueOutgoing.add(request);
   }
   
+  public void sendDeclineCall() {
+    ClientRequest request= new ClientRequest();
+    request.setRequestType(VOIPConstant.OP_REQUEST_DECLINE);
+    request.setRequestTarget(remoteIP.getHostAddress());
+    queueOutgoing.add(request);
+  }
   public void sendMessage(String remoteIP, String message) {
     ClientRequest request= new ClientRequest();
     request.setRequestType(VOIPConstant.OP_REQUEST_SENDMESSAGE);
@@ -117,6 +123,12 @@ public class UserThread extends Thread {
     request.setRequestMessage(message);
     messages.append(socket.getLocalAddress().getHostAddress() + ":" + message + "\r\n");
     queueOutgoing.add(request); 
+  }
+  
+  public void sendExitRequest() {
+    ClientRequest request= new ClientRequest();
+    request.setRequestType(VOIPConstant.OP_REQUEST_EXIT);
+    queueOutgoing.add(request);
   }
   
   public String getMessages() {
@@ -169,12 +181,13 @@ public class UserThread extends Thread {
             this.listClients = response.getListOfClients();
           } else if (response.getResponseType().equals(VOIPConstant.OP_REACH_CALLEE)) {
             this.remoteIP = InetAddress.getByName(response.getRequestTarget());
-            sendAcceptCall(response.getRequestTarget());
+            context.startActivity(new Intent(context, IncomingCall.class));
           } else if (response.getResponseType().equals(VOIPConstant.OP_RESPONSE_CALL)) {
             if (response.getCalleeStatus() == VOIPConstant.CALLEE_STATUS_READY) {
-              Log.v("READY!!", response.getRequestTarget());
               this.remoteIP = InetAddress.getByName(response.requestTarget);
               context.startActivity(new Intent(context, OutgoingCall.class));
+            } else if (response.getCalleeStatus() == VOIPConstant.CALLEE_STATUS_DECLINE) {
+              context.startActivity(new Intent(context, OnlineList.class));
             }
           } else if (response.getResponseType().equals(VOIPConstant.OP_RESPONSE_DROP)) {
             AudioSender.getInstance().stopRecording();
