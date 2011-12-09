@@ -1,6 +1,6 @@
 package edu.purdue.cs.voip.client;
 
-import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.Scanner;
 
@@ -24,18 +24,20 @@ public class VOIP_ClientActivity extends Activity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main);
     // final VOIP_ClientActivity self = this;
+    String strIPPort;
 
-    String serverIP;
-    ((EditText) findViewById(R.id.serverIP)).setText("128.10.25.214");
-    try {
-      Scanner s = new Scanner(new File(FILENAME));
-      serverIP = s.next();
-
-      ((EditText) findViewById(R.id.serverIP)).setText(serverIP);
-
-    } catch (Exception e) {
-      e.printStackTrace();
+    if (getFileStreamPath(FILENAME).exists()) {
+        Scanner s;
+        try {
+          s = new Scanner(getFileStreamPath(FILENAME));
+          strIPPort = s.next();
+          ((EditText) findViewById(R.id.serverIP)).setText(strIPPort);
+        } catch (FileNotFoundException e) {
+          e.printStackTrace();
+        }
     }
+
+    //((EditText) findViewById(R.id.serverIP)).setText("128.10.25.221:8888");
 
     ((Button) findViewById(R.id.next)).setOnClickListener(new View.OnClickListener() {
       public void onClick(View v) {
@@ -43,15 +45,19 @@ public class VOIP_ClientActivity extends Activity {
         if (((((EditText) findViewById(R.id.serverIP)).getText().toString().length())) == 0) {
         } else {
           String textField = ((EditText) findViewById(R.id.serverIP)).getText().toString();
-//          Scanner s = new Scanner(textField);
-          String serverIP = textField;
-//          int port = Integer.parseInt(s.next());
+          Scanner s = new Scanner(textField);
+          s.useDelimiter(":");
+          String serverIP = s.next();
+          int port = Integer.parseInt(s.next());
 
-          UserThread.getInstance().initialize(serverIP, 8888, self);
+          UserThread.getInstance().initialize(serverIP, port, self);
           UserThread.getInstance().start();
         }
       }
     });
+    
+    Ringtone.getInstance().init(this);
+    Ringtone.getInstance().start();
   }
 
   public UserThread getUserThread() {
@@ -59,7 +65,6 @@ public class VOIP_ClientActivity extends Activity {
   }
 
   public void switchToOnlineList() {
-    // save the valid ip & port
     try {
       FileOutputStream fos = openFileOutput(FILENAME, Context.MODE_PRIVATE);
       fos.write(((EditText) findViewById(R.id.serverIP)).getText().toString().getBytes());
@@ -67,7 +72,6 @@ public class VOIP_ClientActivity extends Activity {
     } catch (Exception e) {
       e.printStackTrace();
     }
-
     startActivity(new Intent(this, OnlineList.class));
   }
 

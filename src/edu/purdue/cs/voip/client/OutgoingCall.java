@@ -57,6 +57,7 @@ public class OutgoingCall extends Activity {
     final TextView chatBox = ((TextView) (findViewById(R.id.chatBox)));
     final EditText inputBox = ((EditText) (findViewById(R.id.inputBox)));
     
+   
     sendMessage.setOnClickListener(new View.OnClickListener() {
       public void onClick(View v) {
         UserThread.getInstance().sendMessage(remoteIP.getHostAddress(), inputBox.getText().toString());
